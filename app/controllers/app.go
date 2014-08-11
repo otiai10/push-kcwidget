@@ -8,6 +8,6 @@ type App struct {
 
 func (c App) Index() revel.Result {
 	return c.RenderJson(map[string]string{
-        "test": "testtest",
-    })
+		"test": "testtest",
+	})
 }
