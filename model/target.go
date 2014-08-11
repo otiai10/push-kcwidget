@@ -1,11 +1,8 @@
 package model
 
-const (
-	PushTypeApple = iota
-	// PushServiceAndroid = iota
-)
+import "push-kcwidget/common"
 
 type Target struct {
-	Type  int
+	Type  common.PushType
 	Token string
 }
