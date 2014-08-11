@@ -2,7 +2,7 @@ package model
 
 import "push-kcwidget/common"
 
-type Target struct {
-	Type  common.PushType
+type Service struct {
+	typ   common.PushType
 	Token string
 }
