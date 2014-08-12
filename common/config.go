@@ -1,5 +1,15 @@
 package common
 
+var prefix = ""
+
+func SetPrefix(prfx string) string {
+	prefix = prfx
+	return prefix
+}
+func Prefix() string {
+	return prefix
+}
+
 func GetRedisHostAndPort(args ...int) (host string, port string) {
 	var index int = 0
 	if len(args) > 0 {
