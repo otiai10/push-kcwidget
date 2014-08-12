@@ -1,6 +1,8 @@
 language: go
 go:
     - tip
+services:
+    - redis-server
 install:
     - go get github.com/revel/revel
     - go get github.com/otiai10/rodeo
