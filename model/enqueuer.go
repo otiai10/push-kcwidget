@@ -1,6 +1,6 @@
 package model
 
-import "push-kcwidget/common"
+import "github.com/otiai10/push-kcwidget/common"
 import "github.com/otiai10/rodeo"
 
 type Enqueuer struct {

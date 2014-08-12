@@ -1,6 +1,6 @@
 package observer_test
 
-import "push-kcwidget/observer"
+import "github.com/otiai10/push-kcwidget/observer"
 import "testing"
 import . "github.com/otiai10/mint"
 

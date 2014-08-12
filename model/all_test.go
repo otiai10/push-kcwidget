@@ -1,7 +1,7 @@
 package model_test
 
-import "push-kcwidget/common"
-import "push-kcwidget/model"
+import "github.com/otiai10/push-kcwidget/common"
+import "github.com/otiai10/push-kcwidget/model"
 import "testing"
 import . "github.com/otiai10/mint"
 import "time"

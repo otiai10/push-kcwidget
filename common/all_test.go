@@ -1,6 +1,6 @@
 package common_test
 
-import "push-kcwidget/common"
+import "github.com/otiai10/push-kcwidget/common"
 import "testing"
 import . "github.com/otiai10/mint"
 

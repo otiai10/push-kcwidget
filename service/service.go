@@ -1,6 +1,6 @@
 package service
 
-import "push-kcwidget/common"
+import "github.com/otiai10/push-kcwidget/common"
 
 type PushClient interface {
 	Send() error
