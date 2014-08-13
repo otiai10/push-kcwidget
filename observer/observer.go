@@ -69,7 +69,34 @@ func (o *Observer) execute(now time.Time) {
 	}
 }
 
+// これモデルじゃね？
+type PushSet struct {
+	typ    common.PushType
+	token  string
+	events []Event
+}
+type Event interface{}
+
+func (set PushSet) Type() common.PushType {
+	return set.typ
+}
+func (set PushSet) Token() string {
+	return set.token
+}
+func (set PushSet) Events() []Event {
+	return set.events
+}
+
 func (o *Observer) callPushServiceFromQueue(queue *model.Queue) (e error) {
-	// Do something
+	return
+}
+func (o *Observer) createPushSet(queue *model.Queue) (set PushSet, e error) {
+	// queueからuserを取得
+	// user := model.FindUserByTwitterIdStr(queue.User.TwitterIdStr)
+	// if user == nil {
+	//     return fmt.Errorf("User not found")
+	// }
+	// events := user.FindReadyEvents()
+	//
 	return
 }

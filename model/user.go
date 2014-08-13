@@ -8,9 +8,9 @@ type User struct {
 }
 
 type UserEvents struct {
-	Missions []Mission
-	Nyukyos  []Nyukyo
+	Missions []Event
+	Nyukyos  []Event
 }
 
-type Mission struct{}
-type Nyukyo struct{}
+type Mission struct{} // implements Event
+type Nyukyo struct{}  // implements Event

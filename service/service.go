@@ -10,10 +10,11 @@ type PushSet interface {
 	Type() common.PushType
 	Token() string
 	Events() []Event
-	// GetParams()?
 }
 
-type Event interface{}
+type Event interface {
+	// ToParams()?
+}
 
 func NewClient(set PushSet) PushClient {
 	switch set.Type() {
