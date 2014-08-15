@@ -1,6 +1,7 @@
 package controllers
 
 import "github.com/revel/revel"
+import "github.com/otiai10/push-kcwidget/model"
 
 type UserController struct {
 	*revel.Controller
@@ -12,22 +13,31 @@ func (params UserRegistrationParams) ToMap() (m map[string]string) {
 	return
 }
 
-func (c *UserController) Register(params UserRegistrationParams) revel.Result {
+func (c *UserController) Register(username, idStr, deviceToken, service string) revel.Result {
 
-	// (1) ユーザを取得する
-	// old := model.FindUserByTwitterIdStr(twitterIdStr)
+	revel.INFO.Println(username, idStr, deviceToken)
 
-	// (2) 新規ユーザを作る
-	// user := model.CreaetUserWithRegisterParams(params)
+	if service == "" {
+		service = "apn"
+	}
 
-	// (3) マージする
-	// user = model.MergeUser(user, old)
-
-	// (4) ユーザ情報をDBにアップデートする
-	// if e := user.Save(); e != nil {
-	//     return c.ErrorOf(e)
+	user := model.CreaetOrMergeUserWithRegisterParams(
+		username,
+		idStr,
+		deviceToken,
+		service,
+	)
+	if e := user.Save(); e != nil {
+		return c.ErrorOf(e)
+	}
 
 	return c.RenderJson(map[string]string{
 		"message": "User registration succeeded",
+	})
+}
+
+func (c *UserController) ErrorOf(e error) revel.Result {
+	return c.RenderJson(map[string]string{
+		"message": e.Error(),
 	})
 }
