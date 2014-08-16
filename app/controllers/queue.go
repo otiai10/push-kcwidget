@@ -6,8 +6,9 @@ type QueueController struct {
 	*revel.Controller
 }
 
-func (c *QueueController) Add(finish int64) revel.Result {
+func (c *QueueController) Add(finish int64, id_str, message, kind, client_token string) revel.Result {
 
+	revel.INFO.Println(finish, id_str, message, kind, client_token)
 	// (1) ユーザ登録の有無を確認する
 	// user := model.FindUserByTwitterIdStr(twitterIdStr)
 	// if user == nil {
