@@ -7,12 +7,7 @@ type User struct {
 	TwitterIdStr string    // "140021552"
 	Name         string    // "otiai10"
 	Services     []Service // AppleとかAndroidとかがTokenとともに入る
-	Events       UserEvents
-}
-
-type UserEvents struct {
-	Missions []Event
-	Nyukyos  []Event
+	Events       []Event
 }
 
 type Mission struct{} // implements Event
@@ -28,11 +23,16 @@ func init() {
 func CreaetOrMergeUserWithRegisterParams(username, twitterIdStr, deviceToken, service string) (user User) {
 	vaquero.Cast(common.Prefix()+"user."+twitterIdStr, &user)
 	user.TwitterIdStr = twitterIdStr
-	user.Name = username
+	if username != "" {
+		user.Name = username
+	}
 	return user.UpdateWithPushService(deviceToken, service)
 }
 
 func (user User) UpdateWithPushService(deviceToken, serviceName string) User {
+	if deviceToken == "" {
+		return user
+	}
 	s := Service{
 		GetPushTypeByName(serviceName),
 		deviceToken,
@@ -53,4 +53,31 @@ func (user User) UpdateWithPushService(deviceToken, serviceName string) User {
 
 func (user User) Save() (e error) {
 	return vaquero.Store(common.Prefix()+"user."+user.TwitterIdStr, user)
+}
+
+func FindUserByTwitterIdStr(twitterIdStr string) (user User, ok bool) {
+	vaquero.Cast(common.Prefix()+"user."+twitterIdStr, &user)
+	if user.TwitterIdStr == "" {
+		return user, false
+	}
+	return user, true
+}
+
+func (user User) SetEvent(newEvent Event) User {
+    var updated bool
+    for i, ev := range user.Events {
+        if ev.Kind != newEvent.Kind {
+            continue
+        }
+        if ev.Identifier != newEvent.Identifier {
+            continue
+        }
+        user.Events[i] = newEvent
+        updated = true
+        break
+    }
+    if ! updated {
+        user.Events = append(user.Events, newEvent)
+    }
+    return user
 }
