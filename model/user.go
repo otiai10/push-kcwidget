@@ -64,20 +64,20 @@ func FindUserByTwitterIdStr(twitterIdStr string) (user User, ok bool) {
 }
 
 func (user User) SetEvent(newEvent Event) User {
-    var updated bool
-    for i, ev := range user.Events {
-        if ev.Kind != newEvent.Kind {
-            continue
-        }
-        if ev.Identifier != newEvent.Identifier {
-            continue
-        }
-        user.Events[i] = newEvent
-        updated = true
-        break
-    }
-    if ! updated {
-        user.Events = append(user.Events, newEvent)
-    }
-    return user
+	var updated bool
+	for i, ev := range user.Events {
+		if ev.Kind != newEvent.Kind {
+			continue
+		}
+		if ev.Identifier != newEvent.Identifier {
+			continue
+		}
+		user.Events[i] = newEvent
+		updated = true
+		break
+	}
+	if !updated {
+		user.Events = append(user.Events, newEvent)
+	}
+	return user
 }
