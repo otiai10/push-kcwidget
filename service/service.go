@@ -1,6 +1,7 @@
 package service
 
 import "github.com/otiai10/push-kcwidget/common"
+import "github.com/otiai10/push-kcwidget/model"
 
 type PushClient interface {
 	Send() error
@@ -9,11 +10,7 @@ type PushClient interface {
 type PushSet interface {
 	Type() common.PushType
 	Token() string
-	Events() []Event
-}
-
-type Event interface {
-	// ToParams()?
+	Events() []model.Event
 }
 
 func NewClient(set PushSet) PushClient {

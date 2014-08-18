@@ -2,6 +2,7 @@ package service_test
 
 import "github.com/otiai10/push-kcwidget/service"
 import "github.com/otiai10/push-kcwidget/common"
+import "github.com/otiai10/push-kcwidget/model"
 import "testing"
 import . "github.com/otiai10/mint"
 
@@ -12,7 +13,7 @@ type DummySet struct {
 func (set DummySet) Type() common.PushType {
 	return set.typ
 }
-func (set DummySet) Events() (events []service.Event) {
+func (set DummySet) Events() (events []model.Event) {
 	return
 }
 func (set DummySet) Token() string {
@@ -35,4 +36,4 @@ func TestApnClient_Send(t *testing.T) {
 	e := client.Send()
 	Expect(t, e).ToBe(nil)
 }
- */
+*/

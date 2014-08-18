@@ -5,6 +5,7 @@ import "fmt"
 import "github.com/otiai10/rodeo"
 import "github.com/otiai10/push-kcwidget/common"
 import "github.com/otiai10/push-kcwidget/model"
+import "github.com/otiai10/push-kcwidget/service"
 
 type Observer struct {
 	closer   chan error
@@ -69,34 +70,20 @@ func (o *Observer) execute(now time.Time) {
 	}
 }
 
-// これモデルじゃね？
-type PushSet struct {
-	typ    common.PushType
-	token  string
-	events []Event
-}
-type Event interface{}
-
-func (set PushSet) Type() common.PushType {
-	return set.typ
-}
-func (set PushSet) Token() string {
-	return set.token
-}
-func (set PushSet) Events() []Event {
-	return set.events
-}
-
 func (o *Observer) callPushServiceFromQueue(queue *model.Queue) (e error) {
+	for _, set := range o.createPushSets(queue) {
+		client := service.NewClient(set)
+		e = client.Send()
+	}
 	return
 }
-func (o *Observer) createPushSet(queue *model.Queue) (set PushSet, e error) {
+func (o *Observer) createPushSets(queue *model.Queue) (sets []model.PushSet) {
 	// queueからuserを取得
-	// user := model.FindUserByTwitterIdStr(queue.User.TwitterIdStr)
-	// if user == nil {
-	//     return fmt.Errorf("User not found")
-	// }
-	// events := user.FindReadyEvents()
-	//
+	// userが見つからない的なやつは、queue成功でよいのでスルー
+	user, _ := model.FindUserByTwitterIdStr(queue.User.TwitterIdStr)
+	events := user.FindReadyEvents()
+	for _, s := range user.Services {
+		sets = append(sets, model.NewPushSet(s.Type, s.Token, events))
+	}
 	return
 }

@@ -81,3 +81,7 @@ func (user User) SetEvent(newEvent Event) User {
 	}
 	return user
 }
+
+func (user User) FindReadyEvents() (e []Event) {
+	return
+}
