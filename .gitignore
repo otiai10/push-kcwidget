@@ -4,3 +4,4 @@ routes/
 conf/app.conf
 # common/map.go
 service/certfiles/
+!*.gitkeep
