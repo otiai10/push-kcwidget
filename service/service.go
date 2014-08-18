@@ -19,7 +19,13 @@ type Event interface {
 func NewClient(set PushSet) PushClient {
 	switch set.Type() {
 	case common.PushTypeApple:
-		return &ApnClient{set: set}
+		host, cert, key := common.GetPushHostAndCertFilesPath(set.Type())
+		return &ApnClient{
+			set:      set,
+			host:     host,
+			certPath: cert,
+			keyPath:  key,
+		}
 	}
 	return &ErrorClient{"service not found"}
 }

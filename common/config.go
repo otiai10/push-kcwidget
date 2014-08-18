@@ -1,5 +1,8 @@
 package common
 
+import "go/build"
+import "path/filepath"
+
 var prefix = ""
 
 func SetPrefix(prfx string) string {
@@ -21,4 +24,13 @@ func GetRedisHostAndPort(args ...int) (host string, port string) {
 		}
 	}
 	return redis[index]["host"], redis[index]["port"]
+}
+
+func GetPushHostAndCertFilesPath(typ PushType) (host, certPath, keyPath string) {
+	projectPath := filepath.Join(build.Default.GOPATH, "src", "github.com/otiai10/push-kcwidget")
+	// 以下Apn用とりあえずハードコーディング
+	host = "gateway.sandbox.push.apple.com:2195"
+	certPath = filepath.Join(projectPath, "service/certfiles", "apple", Prefix()+"cert.pem")
+	keyPath = filepath.Join(projectPath, "service/certfiles", "apple", Prefix()+"key.pem")
+	return
 }
