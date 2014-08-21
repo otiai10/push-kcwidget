@@ -6,6 +6,7 @@ import "github.com/otiai10/rodeo"
 import "github.com/otiai10/push-kcwidget/common"
 import "github.com/otiai10/push-kcwidget/model"
 import "github.com/otiai10/push-kcwidget/service"
+import "github.com/revel/revel" // to log
 
 type Observer struct {
 	closer   chan error
@@ -63,24 +64,29 @@ func (o *Observer) execute(now time.Time) {
 	}
 	for _, q := range queues {
 		queue := q.Retrieve().(*model.Queue)
-		fmt.Printf("%+v\n", queue)
 		if e := o.callPushServiceFromQueue(queue); e == nil {
 			o.accessor.Remove(queue)
+		} else {
+			revel.ERROR.Printf("[PUSH ERROR] %+v", e)
 		}
 	}
 }
 
 func (o *Observer) callPushServiceFromQueue(queue *model.Queue) (e error) {
-	for _, set := range o.createPushSets(queue) {
+	sets, user := o.createPushSets(queue)
+	for _, set := range sets {
 		client := service.NewClient(set)
 		e = client.Send()
 	}
+	if e == nil {
+		user.CleanUpEvents()
+	}
 	return
 }
-func (o *Observer) createPushSets(queue *model.Queue) (sets []model.PushSet) {
+func (o *Observer) createPushSets(queue *model.Queue) (sets []model.PushSet, user model.User) {
 	// queueからuserを取得
 	// userが見つからない的なやつは、queue成功でよいのでスルー
-	user, _ := model.FindUserByTwitterIdStr(queue.User.TwitterIdStr)
+	user, _ = model.FindUserByTwitterIdStr(queue.User.TwitterIdStr)
 	events := user.FindReadyEvents()
 	for _, s := range user.Services {
 		sets = append(sets, model.NewPushSet(s.Type, s.Token, events))

@@ -22,19 +22,6 @@ func (c *QueueController) Add(
 	client_token string,
 ) revel.Result {
 
-	revel.INFO.Println(
-		finish,
-		id_str,
-		message,
-		label,
-		prefix,
-		identifier,
-		unit,
-		kind,
-		client_token,
-		missionTitle,
-		missionId,
-	)
 	// (1) ユーザ登録の有無を確認する
 	user, ok := model.FindUserByTwitterIdStr(id_str)
 	if !ok {
@@ -54,19 +41,19 @@ func (c *QueueController) Add(
 		missionId,
 		missionTitle,
 	)
-	revel.INFO.Printf("%+v\n", user)
-	revel.INFO.Printf("%+v\n", event)
 
 	// (2) ユーザ情報をメモリでアップデートする
 	user = user.SetEvent(event)
 
 	// (3) ユーザ情報をDBにアップデートする
 	if e := user.Save(); e != nil {
+		revel.ERROR.Println(e)
 		return c.ErrorOf(e)
 	}
 
 	// (4) エンキューする
 	if e := model.Enqueue(finish, user); e != nil {
+		revel.ERROR.Println(e)
 		return c.ErrorOf(e)
 	}
 	return c.RenderJson(map[string]string{

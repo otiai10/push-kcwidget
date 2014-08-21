@@ -1,6 +1,7 @@
 package app
 
 import "github.com/revel/revel"
+import "github.com/otiai10/push-kcwidget/observer"
 
 func init() {
 	// Filters is the default set of global filters.
@@ -23,6 +24,10 @@ func init() {
 	// ( order dependent )
 	// revel.OnAppStart(InitDB())
 	// revel.OnAppStart(FillCache())
+
+	// ここでobserverをスタートさせる
+	obsrvr := observer.New()
+	obsrvr.Start()
 }
 
 // TODO turn this into revel.HeaderFilter

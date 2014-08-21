@@ -22,6 +22,7 @@ func CreateEventFromRequestParams(
 	optionalStrings ...string,
 ) (event Event) {
 	event.Finish = finish
+	event.Message = message
 	event.Kind = kind
 	event.Label = label
 	event.Prefix = prefix

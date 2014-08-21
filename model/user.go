@@ -1,5 +1,6 @@
 package model
 
+import "time"
 import "github.com/otiai10/rodeo"
 import "github.com/otiai10/push-kcwidget/common"
 
@@ -82,6 +83,23 @@ func (user User) SetEvent(newEvent Event) User {
 	return user
 }
 
-func (user User) FindReadyEvents() (e []Event) {
+func (user User) FindReadyEvents() (events []Event) {
+	for _, ev := range user.Events {
+		if ev.Finish <= time.Now().Unix() {
+			events = append(events, ev)
+		}
+	}
 	return
+}
+
+func (user User) CleanUpEvents() (e error) {
+	var events []Event
+	for _, ev := range user.Events {
+		if ev.Finish < time.Now().Unix() {
+			continue
+		}
+		events = append(events, ev)
+	}
+	user.Events = events
+	return user.Save()
 }
