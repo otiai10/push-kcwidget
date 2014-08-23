@@ -31,26 +31,26 @@ show_help() {
     echo "\trestart {dev|prod}"
 }
 
-if [ "$1" == "run" ]; then
+if [ "$1" = "run" ]; then
     mode="dev"
-    if [ "$2" == "prod" ]; then
+    if [ "$2" = "prod" ]; then
         mode="prod"
     fi
-    if [ `is_running $mode` == 1 ]; then
+    if [ `is_running $mode` = 1 ]; then
         echo "Already running in $mode mode"
         exit 1
     fi
     # process is clean
     revel run $app $mode
-elif [ "$1" == "stop" ]; then
+elif [ "$1" = "stop" ]; then
     mode="dev"
-    if [ "$2" == "prod" ]; then
+    if [ "$2" = "prod" ]; then
         mode="prod"
     fi
     kill_by_mode $mode   
-elif [ "$1" == "restart" ]; then
+elif [ "$1" = "restart" ]; then
     mode="dev"
-    if [ "$2" == "prod" ]; then
+    if [ "$2" = "prod" ]; then
         mode="prod"
     fi
     kill_by_mode $mode
