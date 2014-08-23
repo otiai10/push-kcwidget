@@ -4,7 +4,7 @@ app="github.com/otiai10/push-kcwidget"
 
 get_pids() {
     local mode=$1
-    echo `ps aux | grep revel | grep $mode | awk '{print $2}'`
+    echo `ps aux | grep $app | grep revel | grep $mode | awk '{print $2}'`
 }
 is_running() {
     local mode=$1
