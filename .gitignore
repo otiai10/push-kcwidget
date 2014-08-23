@@ -6,3 +6,5 @@ conf/app.conf
 service/certfiles/
 !*.gitkeep
 *.rdb
+*.out
+*.log
