@@ -33,3 +33,15 @@ func CreateEventFromRequestParams(
 	}
 	return event
 }
+
+type Events []Event
+
+func (events Events) Len() int {
+	return len(events)
+}
+func (events Events) Less(i, j int) bool {
+	return events[i].Finish < events[j].Finish
+}
+func (events Events) Swap(i, j int) {
+	events[i], events[j] = events[j], events[i]
+}

@@ -1,6 +1,7 @@
 package model
 
 import "time"
+import "sort"
 import "github.com/otiai10/rodeo"
 import "github.com/otiai10/push-kcwidget/common"
 
@@ -8,7 +9,7 @@ type User struct {
 	TwitterIdStr string    // "140021552"
 	Name         string    // "otiai10"
 	Services     []Service // AppleとかAndroidとかがTokenとともに入る
-	Events       []Event
+	Events       Events
 }
 
 type Mission struct{} // implements Event
@@ -108,5 +109,10 @@ func (user User) FilterPrivateInfo() User {
 	for i, _ := range user.Services {
 		user.Services[i].Token = ""
 	}
+	return user
+}
+
+func (user User) SortEvents() User {
+	sort.Sort(user.Events)
 	return user
 }

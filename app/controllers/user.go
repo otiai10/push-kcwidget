@@ -40,7 +40,7 @@ func (c *UserController) Get(twitterIdStr string) revel.Result {
 	user, ok := model.FindUserByTwitterIdStr(twitterIdStr)
 	return c.RenderJson(map[string]interface{}{
 		"message": ok,
-		"user":    user.FilterPrivateInfo(),
+		"user":    user.FilterPrivateInfo().SortEvents(),
 	})
 }
 
