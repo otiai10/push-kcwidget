@@ -36,6 +36,14 @@ func (c *UserController) Register(username, idStr, deviceToken, service string) 
 	})
 }
 
+func (c *UserController) Get(twitterIdStr string) revel.Result {
+	user, ok := model.FindUserByTwitterIdStr(twitterIdStr)
+	return c.RenderJson(map[string]interface{}{
+		"message": ok,
+		"user":    user.FilterPrivateInfo(),
+	})
+}
+
 func (c *UserController) ErrorOf(e error) revel.Result {
 	return c.RenderJson(map[string]string{
 		"message": e.Error(),

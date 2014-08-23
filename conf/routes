@@ -7,3 +7,4 @@ module:testrunner
 GET     /                                       App.Index
 POST    /queue/add                              QueueController.Add
 POST    /user/register                          UserController.Register
+GET     /user/:twitterIdStr                     UserController.Get

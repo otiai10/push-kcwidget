@@ -103,3 +103,10 @@ func (user User) CleanUpEvents() (e error) {
 	user.Events = events
 	return user.Save()
 }
+
+func (user User) FilterPrivateInfo() User {
+	for i, _ := range user.Services {
+		user.Services[i].Token = ""
+	}
+	return user
+}
