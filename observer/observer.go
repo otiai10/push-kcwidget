@@ -75,6 +75,9 @@ func (o *Observer) execute(now time.Time) {
 func (o *Observer) callPushServiceFromQueue(queue *model.Queue) (e error) {
 	sets, user := o.createPushSets(queue)
 	for _, set := range sets {
+		if len(set.Events()) == 0 {
+			continue
+		}
 		client := service.NewClient(set)
 		e = client.Send()
 	}
