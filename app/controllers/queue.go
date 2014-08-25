@@ -19,8 +19,14 @@ func (c *QueueController) Add(
 	kind,
 	missionTitle, //optional
 	missionId, //optional
-	client_token string,
+	clientToken string,
 ) revel.Result {
+
+	if configToken, ok := revel.Config.String("client.token"); ok {
+		if configToken != clientToken {
+			return c.ErrorOf(fmt.Errorf("Invlid client token"))
+		}
+	}
 
 	// (1) ユーザ登録の有無を確認する
 	user, ok := model.FindUserByTwitterIdStr(id_str)
@@ -56,13 +62,15 @@ func (c *QueueController) Add(
 		revel.ERROR.Println(e)
 		return c.ErrorOf(e)
 	}
-	return c.RenderJson(map[string]string{
+	return c.RenderJson(map[string]interface{}{
+		"code":    1000,
 		"message": "Enqueue succeeded",
 	})
 }
 
 func (c *QueueController) ErrorOf(e error) revel.Result {
-	return c.RenderJson(map[string]string{
+	return c.RenderJson(map[string]interface{}{
+		"code":    2000,
 		"error":   "error",
 		"message": e.Error(),
 	})
