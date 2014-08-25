@@ -15,7 +15,7 @@ type Observer struct {
 	accessor *rodeo.SortedSet
 }
 
-var iteration = 1 * time.Second
+var iteration = 5 * time.Second
 
 func initAccessor() (ss *rodeo.SortedSet, e error) {
 	host, port := common.GetRedisHostAndPort()
