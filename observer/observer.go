@@ -16,6 +16,7 @@ type Observer struct {
 }
 
 var iteration = 5 * time.Second
+var onFail = make(chan model.User)
 
 func initAccessor() (ss *rodeo.SortedSet, e error) {
 	host, port := common.GetRedisHostAndPort()
@@ -50,10 +51,17 @@ func (o *Observer) run() {
 			o.execute(now)
 		case err := <-o.closer:
 			o.err = err
-			break
+			return
+		case userSnapShot := <-onFail:
+			revel.ERROR.Printf("[To    USER] %+v", userSnapShot)
+			// something to handle failure
 		}
 	}
 	return
+}
+
+func (o *Observer) fail(userSnapShot model.User) {
+	onFail <- userSnapShot
 }
 
 func (o *Observer) execute(now time.Time) {
@@ -66,24 +74,12 @@ func (o *Observer) execute(now time.Time) {
 		queue := q.Retrieve().(*model.Queue)
 		if e := o.callPushServiceFromQueue(queue); e == nil {
 			o.accessor.Remove(queue)
-		} else {
-			revel.ERROR.Printf("[PUSH ERROR] %+v", e)
 		}
 	}
 }
 
 func (o *Observer) callPushServiceFromQueue(queue *model.Queue) (e error) {
-	sets, user := o.createPushSets(queue)
-	for _, set := range sets {
-		if len(set.Events()) == 0 {
-			continue
-		}
-		client := service.NewClient(set)
-		e = client.Send()
-	}
-	if e == nil {
-		user.CleanUpEvents()
-	}
+	go o.sendNotificationAndCleanUpUserEvent(queue)
 	return
 }
 func (o *Observer) createPushSets(queue *model.Queue) (sets []model.PushSet, user model.User) {
@@ -95,4 +91,26 @@ func (o *Observer) createPushSets(queue *model.Queue) (sets []model.PushSet, use
 		sets = append(sets, model.NewPushSet(s.Type, s.Token, events))
 	}
 	return
+}
+func (o *Observer) sendNotificationAndCleanUpUserEvent(queue *model.Queue) {
+	checked := time.Unix(queue.Timestamp, 0)
+	sets, user := o.createPushSets(queue)
+	go func() {
+		var e error
+		for _, set := range sets {
+			// queueはあるがUser.Eventsが更新され
+			// ReadyEventsは無い場合ことは十分ある
+			if len(set.Events()) == 0 {
+				continue
+			}
+			client := service.NewClient(set)
+			e = client.Send()
+		}
+		if e != nil {
+			revel.ERROR.Printf("[PUSH ERROR] %+v", e)
+			o.fail(user)
+			return
+		}
+		user.CleanUpEvents(checked)
+	}()
 }

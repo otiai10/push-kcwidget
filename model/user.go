@@ -93,10 +93,10 @@ func (user User) FindReadyEvents() (events []Event) {
 	return
 }
 
-func (user User) CleanUpEvents() (e error) {
+func (user User) CleanUpEvents(checked time.Time) (e error) {
 	var events []Event
 	for _, ev := range user.Events {
-		if ev.Finish < time.Now().Unix() {
+		if ev.Finish < checked.Unix() {
 			continue
 		}
 		events = append(events, ev)
