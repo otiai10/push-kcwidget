@@ -25,6 +25,9 @@ func Enqueue(timestamp int64, user User) error {
 }
 
 func (enqr *Enqueuer) InitAccessor() (e error) {
+	// 毎回インスタンス作るのコスト悪い気がするぞ〜
+	host, port := common.GetRedisHostAndPort()
+	vaquero, e := rodeo.NewVaquero(host, port)
 	if e != nil {
 		return e
 	}
@@ -45,6 +48,8 @@ func (enqr *Enqueuer) Enqueue(timestamp int64, user User) (e error) {
  * for dev
  */
 func CleanQueue() (e error) {
+	host, port := common.GetRedisHostAndPort()
+	vaquero, e := rodeo.NewVaquero(host, port)
 	if e != nil {
 		return
 	}

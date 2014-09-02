@@ -2,6 +2,7 @@ package model
 
 import "time"
 import "sort"
+import "github.com/otiai10/rodeo"
 import "github.com/otiai10/push-kcwidget/common"
 
 type User struct {
@@ -13,6 +14,13 @@ type User struct {
 
 type Mission struct{} // implements Event
 type Nyukyo struct{}  // implements Event
+
+var vaquero *rodeo.Vaquero
+
+func init() {
+	host, port := common.GetRedisHostAndPort()
+	vaquero, _ = rodeo.NewVaquero(host, port)
+}
 
 func CreaetOrMergeUserWithRegisterParams(username, twitterIdStr, deviceToken, service string) (user User) {
 	vaquero.Cast(common.Prefix()+"user."+twitterIdStr, &user)

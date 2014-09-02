@@ -19,7 +19,9 @@ var iteration = 5 * time.Second
 var onFail = make(chan model.User)
 
 func initAccessor() (ss *rodeo.SortedSet, e error) {
-	ss, e = vaquero.Tame(common.Prefix()+"queues", model.Queue{})
+	host, port := common.GetRedisHostAndPort()
+	vaq, e := rodeo.NewVaquero(host, port)
+	ss, e = vaq.Tame(common.Prefix()+"queues", model.Queue{})
 	return
 }
 
