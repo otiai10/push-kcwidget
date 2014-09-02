@@ -95,22 +95,20 @@ func (o *Observer) createPushSets(queue *model.Queue) (sets []model.PushSet, use
 func (o *Observer) sendNotificationAndCleanUpUserEvent(queue *model.Queue) {
 	checked := time.Unix(queue.Timestamp, 0)
 	sets, user := o.createPushSets(queue)
-	go func() {
-		var e error
-		for _, set := range sets {
-			// queueはあるがUser.Eventsが更新され
-			// ReadyEventsは無い場合ことは十分ある
-			if len(set.Events()) == 0 {
-				continue
-			}
-			client := service.NewClient(set)
-			e = client.Send()
+	var e error
+	for _, set := range sets {
+		// queueはあるがUser.Eventsが更新され
+		// ReadyEventsは無い場合ことは十分ある
+		if len(set.Events()) == 0 {
+			continue
 		}
-		if e != nil {
-			revel.ERROR.Printf("[PUSH ERROR] %+v", e)
-			o.fail(user)
-			return
-		}
-		user.CleanUpEvents(checked)
-	}()
+		client := service.NewClient(set)
+		e = client.Send()
+	}
+	if e != nil {
+		revel.ERROR.Printf("[PUSH ERROR] %+v", e)
+		o.fail(user)
+		return
+	}
+	user.CleanUpEvents(checked)
 }
