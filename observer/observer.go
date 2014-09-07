@@ -15,7 +15,7 @@ type Observer struct {
 	accessor *rodeo.SortedSet
 }
 
-var iteration = 5 * time.Second
+var iteration = 20 * time.Second
 var onFail = make(chan model.User)
 
 func initAccessor() (ss *rodeo.SortedSet, e error) {
