@@ -4,7 +4,7 @@ app="github.com/otiai10/push-kcwidget"
 
 get_pids() {
     local mode=$1
-    echo `ps aux | grep $app | grep revel | grep $mode | awk '{print $2}'`
+    echo `ps aux | grep $app | grep $mode | awk '{print $2}'`
 }
 is_running() {
     local mode=$1
@@ -29,6 +29,8 @@ show_help() {
     echo "\trun {dev|prod}"
     echo "\tstop {dev|prod}"
     echo "\trestart {dev|prod}"
+    echo "EXAMPLES"
+    echo "\tsh cli/app.sh restart prod"
 }
 
 if [ "$1" = "run" ]; then
@@ -54,7 +56,9 @@ elif [ "$1" = "restart" ]; then
         mode="prod"
     fi
     kill_by_mode $mode
-    revel run $app $mode
+    # う〜ん...
+    # revel run $app $mode
+    nohup revel run $app $mode >> log/app.log &
 else
     show_help
 fi
