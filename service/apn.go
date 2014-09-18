@@ -25,13 +25,7 @@ func (c *ApnClient) Send() error {
 // とりあえずひとつひとつリクエストする
 func (c *ApnClient) sendToApn(set PushSet) (e error) {
 	payload := apns.NewPayload()
-	// {{{ 雑
-	var message string = "デフォルトメッセージ"
-	if len(set.Events()) > 0 {
-		message = set.Events()[0].Message
-	}
-	payload.Alert = message
-	// }}}
+	payload.Alert = getMessage(set.Events())
 	payload.Sound = "default"
 
 	pushNotification := apns.NewPushNotification()
